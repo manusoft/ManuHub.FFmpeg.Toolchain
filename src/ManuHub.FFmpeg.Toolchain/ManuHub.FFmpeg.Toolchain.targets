@@ -32,8 +32,6 @@
 		<Output TaskParameter="Include" ItemName="FoundBinaries" />
 	  </CreateItem>
 
-	  <Message Importance="high" Text="[ManuHub Debug] Found binaries: @(FoundBinaries)" />
-
 	  <MakeDir Directories="$(ToolsDir)" />
 	  <Copy SourceFiles="@(FoundBinaries)" DestinationFolder="$(ToolsDir)" SkipUnchangedFiles="true" />
 
