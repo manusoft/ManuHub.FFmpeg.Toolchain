@@ -1,0 +1,43 @@
+<Project>
+	<PropertyGroup>
+	  <BinariesDir>$(IntermediateOutputPath)toolschain</BinariesDir>
+	  <ToolsDir>$(TargetDir)tools</ToolsDir>
+	</PropertyGroup>
+
+	<Target Name="EnsureFFmpegBinaries" BeforeTargets="BeforeBuild">
+	  <PropertyGroup>
+		<ArchiveName>ffmpeg.zip</ArchiveName>
+		<DownloadUrl>https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip</DownloadUrl>
+		<NeedsDownload Condition="!Exists('$(BinariesDir)\temp\bin\ffmpeg.exe')">true</NeedsDownload>
+	  </PropertyGroup>
+
+	  <MakeDir Directories="$(BinariesDir)" Condition="'$(NeedsDownload)' == 'true'" />
+	  <DownloadFile SourceUrl="$(DownloadUrl)"
+					DestinationFolder="$(BinariesDir)"
+					DestinationFileName="$(ArchiveName)"
+					Condition="'$(NeedsDownload)' == 'true'" />
+	  <Unzip SourceFiles="$(BinariesDir)\$(ArchiveName)"
+			 DestinationFolder="$(BinariesDir)\temp"
+			 Condition="'$(NeedsDownload)' == 'true'" />
+
+	  <CreateItem Include="$(BinariesDir)\temp\**\ffmpeg.exe;$(BinariesDir)\temp\**\ffprobe.exe;$(BinariesDir)\temp\**\ffplay.exe">
+		<Output TaskParameter="Include" ItemName="FoundBinaries" />
+	  </CreateItem>
+
+	  <MakeDir Directories="$(ToolsDir)" />
+	  <Copy SourceFiles="@(FoundBinaries)"
+			DestinationFolder="$(ToolsDir)"
+			SkipUnchangedFiles="true" />
+
+	  <Message Importance="high" Text="[ManuHub] FFmpeg tools synchronized to $(ToolsDir)" />
+	</Target>
+
+	<Target Name="RegisterFFmpegForPublish" BeforeTargets="PrepareForPublish">
+	  <ItemGroup>
+		<None Include="$(ToolsDir)\**\*">
+		  <Link>tools\%(RecursiveDir)%(Filename)%(Extension)</Link>
+	      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+		</None>
+	  </ItemGroup>
+	</Target>
+</Project>

@@ -1,0 +1,8 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/ManuHub.FFmpeg.Toolchain/ManuHub.FFmpeg.Toolchain.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/ConsoleApp.Test/ConsoleApp.Test.csproj" />
+  </Folder>
+</Solution>

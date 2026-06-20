@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+	<PackageId>ManuHub.FFmpeg.Toolchain</PackageId>
+	<Version>1.0.0</Version>
+	<Authors>Manojbabu</Authors>
+	<Company>ManuHub</Company>
+	<Description>A cross-platform toolchain that automatically downloads FFmpeg, FFprobe, and FFplay binaries on the first build.</Description>
+	<PackageProjectUrl>https://github.com/manusoft/ManuHub.FFmpeg.Toolchain</PackageProjectUrl>
+	<PackageTags>ffmpeg;ffprobe;ffplay;toolchain;binary;shim</PackageTags>
+	<PackageLicenseExpression>MIT</PackageLicenseExpression>
+	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+	<IncludeBuildOutput>false</IncludeBuildOutput>
+  </PropertyGroup>
+
+  <ItemGroup>
+	<None Include="ManuHub.FFmpeg.Toolchain.targets" Pack="true" PackagePath="build\ManuHub.FFmpeg.Toolchain.targets" />
+  </ItemGroup>
+
+</Project>
