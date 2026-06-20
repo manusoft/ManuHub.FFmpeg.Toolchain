@@ -2,13 +2,25 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	  
 	<PackageId>ManuHub.FFmpeg.Toolchain</PackageId>
-	<Version>1.0.0</Version>
+	  
+	<Description>A cross-platform toolchain that automatically downloads FFmpeg, FFprobe, and FFplay binaries on the first build.</Description>
 	<Authors>Manojbabu</Authors>
 	<Company>ManuHub</Company>
-	<Description>A cross-platform toolchain that automatically downloads FFmpeg, FFprobe, and FFplay binaries on the first build.</Description>
-	<PackageProjectUrl>https://github.com/manusoft/ManuHub.FFmpeg.Toolchain</PackageProjectUrl>
+	<Copyright>Copyright © $([System.DateTime]::Now.Year) ManuHub</Copyright>
+	  
 	<PackageTags>ffmpeg;ffprobe;ffplay;toolchain;binary;shim</PackageTags>
+
+	<ProjectUrl>https://ffmpeg.org</ProjectUrl>
+	<RepositoryUrl>https://github.com/manusoft/ManuHub.FFmpeg.Toolchain</RepositoryUrl>
+
+	<PackageIcon>icon.png</PackageIcon>
+	<PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+	<PackageReadmeFile>README.md</PackageReadmeFile>
+	  
+	<Version>1.0.0</Version>
+
 	<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
 	<IncludeBuildOutput>false</IncludeBuildOutput>
@@ -16,6 +28,10 @@
 
   <ItemGroup>
 	<None Include="ManuHub.FFmpeg.Toolchain.targets" Pack="true" PackagePath="build\ManuHub.FFmpeg.Toolchain.targets" />
+	<None Include="icon.png" Pack="true" PackagePath="" />
+	<None Include="README.md" Pack="true" PackagePath="" />
+	<None Include="LICENSE.txt" Pack="true" PackagePath="" />
+	<None Include="THIRD-PARTY-NOTICES.txt" Pack="true" PackagePath="" />
   </ItemGroup>
 
 </Project>

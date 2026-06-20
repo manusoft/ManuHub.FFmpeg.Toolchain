@@ -8,7 +8,8 @@
 	  <PropertyGroup>
 		<ArchiveName>ffmpeg.zip</ArchiveName>
 		<DownloadUrl>https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip</DownloadUrl>
-		<NeedsDownload Condition="!Exists('$(BinariesDir)\temp\bin\ffmpeg.exe')">true</NeedsDownload>
+		<MarkerFile>$(BinariesDir)\downloaded.txt</MarkerFile>
+		<NeedsDownload Condition="!Exists('$(MarkerFile)')">true</NeedsDownload>
 	  </PropertyGroup>
 
 	  <MakeDir Directories="$(BinariesDir)" Condition="'$(NeedsDownload)' == 'true'" />
@@ -28,6 +29,11 @@
 	  <Copy SourceFiles="@(FoundBinaries)"
 			DestinationFolder="$(ToolsDir)"
 			SkipUnchangedFiles="true" />
+
+      <Delete Files="$(BinariesDir)\$(ArchiveName)" />
+	  <RemoveDir Directories="$(BinariesDir)\temp" />
+
+	  <Touch Files="$(MarkerFile)" AlwaysCreate="true" />
 
 	  <Message Importance="high" Text="[ManuHub] FFmpeg tools synchronized to $(ToolsDir)" />
 	</Target>
