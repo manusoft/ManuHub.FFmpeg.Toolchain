@@ -2,40 +2,46 @@
 	<PropertyGroup>
 	  <BinariesDir>$(IntermediateOutputPath)toolschain</BinariesDir>
 	  <ToolsDir>$(TargetDir)tools</ToolsDir>
+
+	  <IsWindows Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Windows)))' == 'true'">true</IsWindows>
+	  <IsLinux   Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+
+	  <ArchiveName Condition="'$(IsWindows)'=='true'">ffmpeg-win.zip</ArchiveName>
+	  <ArchiveName Condition="'$(IsLinux)'=='true'">ffmpeg-linux.tar.xz</ArchiveName>
+
+	  <DownloadUrl Condition="'$(IsWindows)'=='true'">https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip</DownloadUrl>
+	  <DownloadUrl Condition="'$(IsLinux)'=='true'">https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-linux64-gpl.tar.xz</DownloadUrl>
+
+	  <MarkerFile>$(BinariesDir)\downloaded_$(ArchiveName).txt</MarkerFile>
+	  <NeedsDownload Condition="!Exists('$(MarkerFile)')">true</NeedsDownload>
 	</PropertyGroup>
 
 	<Target Name="EnsureFFmpegBinaries" BeforeTargets="BeforeBuild">
+	  <MakeDir Directories="$(BinariesDir)" Condition="'$(NeedsDownload)' == 'true'" />
+	  <DownloadFile SourceUrl="$(DownloadUrl)" DestinationFolder="$(BinariesDir)" DestinationFileName="$(ArchiveName)" Condition="'$(NeedsDownload)' == 'true'" />
+
+	  <Unzip SourceFiles="$(BinariesDir)\$(ArchiveName)" DestinationFolder="$(BinariesDir)\temp" Condition="'$(NeedsDownload)' == 'true' AND '$(IsWindows)'=='true'" />
+	  <Exec Command="tar -xf $(BinariesDir)/$(ArchiveName) -C $(BinariesDir)/temp" Condition="'$(NeedsDownload)' == 'true' AND '$(IsLinux)'=='true'" />
+
 	  <PropertyGroup>
-		<ArchiveName>ffmpeg.zip</ArchiveName>
-		<DownloadUrl>https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-master-latest-win64-gpl.zip</DownloadUrl>
-		<MarkerFile>$(BinariesDir)\downloaded.txt</MarkerFile>
-		<NeedsDownload Condition="!Exists('$(MarkerFile)')">true</NeedsDownload>
+		<FileExtension Condition="'$(IsWindows)'=='true'">.exe</FileExtension>
+		<FileExtension Condition="'$(IsWindows)'!='true'"></FileExtension>
 	  </PropertyGroup>
 
-	  <MakeDir Directories="$(BinariesDir)" Condition="'$(NeedsDownload)' == 'true'" />
-	  <DownloadFile SourceUrl="$(DownloadUrl)"
-					DestinationFolder="$(BinariesDir)"
-					DestinationFileName="$(ArchiveName)"
-					Condition="'$(NeedsDownload)' == 'true'" />
-	  <Unzip SourceFiles="$(BinariesDir)\$(ArchiveName)"
-			 DestinationFolder="$(BinariesDir)\temp"
-			 Condition="'$(NeedsDownload)' == 'true'" />
-
-	  <CreateItem Include="$(BinariesDir)\temp\**\ffmpeg.exe;$(BinariesDir)\temp\**\ffprobe.exe;$(BinariesDir)\temp\**\ffplay.exe">
+	  <CreateItem Include="$(BinariesDir)/temp/**/ffmpeg$(FileExtension);$(BinariesDir)/temp/**/ffprobe$(FileExtension);$(BinariesDir)/temp/**/ffplay$(FileExtension)">
 		<Output TaskParameter="Include" ItemName="FoundBinaries" />
 	  </CreateItem>
 
+	  <Message Importance="high" Text="[ManuHub Debug] Found binaries: @(FoundBinaries)" />
+
 	  <MakeDir Directories="$(ToolsDir)" />
-	  <Copy SourceFiles="@(FoundBinaries)"
-			DestinationFolder="$(ToolsDir)"
-			SkipUnchangedFiles="true" />
+	  <Copy SourceFiles="@(FoundBinaries)" DestinationFolder="$(ToolsDir)" SkipUnchangedFiles="true" />
 
-      <Delete Files="$(BinariesDir)\$(ArchiveName)" />
+	  <Exec Command="chmod +x $(ToolsDir)/ffmpeg* $(ToolsDir)/ffprobe* $(ToolsDir)/ffplay*" Condition="'$(IsLinux)'=='true'" />
+
+	  <Delete Files="$(BinariesDir)\$(ArchiveName)" />
 	  <RemoveDir Directories="$(BinariesDir)\temp" />
-
 	  <Touch Files="$(MarkerFile)" AlwaysCreate="true" />
-
-	  <Message Importance="high" Text="[ManuHub] FFmpeg tools synchronized to $(ToolsDir)" />
 	</Target>
 
 	<Target Name="RegisterFFmpegForPublish" BeforeTargets="PrepareForPublish">
