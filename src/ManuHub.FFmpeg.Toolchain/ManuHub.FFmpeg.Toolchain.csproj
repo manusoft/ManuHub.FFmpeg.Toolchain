@@ -5,7 +5,8 @@
 	<ContentTargetFolders>tools</ContentTargetFolders>
 	<IncludeBuildOutput>false</IncludeBuildOutput>
 	<GeneratePackageOnBuild>false</GeneratePackageOnBuild>
-	  
+	<NoWarn>$(NoWarn);NU5128</NoWarn>
+	
 	<PackageId>ManuHub.FFmpeg.Toolchain</PackageId>
 	<Version>1.0.0</Version>
 	  
